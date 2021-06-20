@@ -13,23 +13,23 @@ public class Centros {
 	private Long id;
 
 	@Column(nullable = false)
-    private String nome, localidade, URL;
+    private String nome, localidade, url;
     private Long vacinadosPorDia;
 
     protected Centros() {}
 
-    public Centros(String nome, String localidade, Long vacinadosPorDia, String URL) {
+    public Centros(String nome, String localidade, Long vacinadosPorDia, String url) {
         this.nome = nome;
         this.localidade = localidade;
         this.vacinadosPorDia = vacinadosPorDia;
-        this.URL = URL;
+        this.url = url;
     }
 
     @Override
 	public String toString() {
 		return String.format(
-				"Product[id=%d, nome='%s', localidade='%s', vacinadoPorDia=%d, URL='%s']",
-				id, nome, localidade, vacinadosPorDia, URL);
+				"Product[id=%d, nome='%s', localidade='%s', vacinadosPorDia=%d, url='%s']",
+				id, nome, localidade, vacinadosPorDia, url);
 	}
     
     public Long getId() {
@@ -48,7 +48,7 @@ public class Centros {
         return vacinadosPorDia;
     }
 
-    public String getURL() {
-        return URL;
+    public String getUrl() {
+        return url;
     }
 }
