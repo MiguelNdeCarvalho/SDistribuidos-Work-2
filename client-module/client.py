@@ -1,4 +1,6 @@
 import requests
+from datetime import date
+
 response = requests.get("http://localhost:8080/api/v1/getCentros")
 
 centros = []
@@ -16,3 +18,7 @@ params = {"nome": "Centro de Vacinação do João Pavia Pereira"}
 centro = requests.get("http://localhost:8080/api/v1/getCentro", params=params)
 
 print(centro.json())
+
+params = {"nome": "Miguel Agostinho","idade": 21, "data": datetime.now(),"email": "jperas243@gmail.com"}
+
+response = requests.get("http://localhost:8080/api/v1/autoAgendamento",params=params)
