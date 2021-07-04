@@ -14,7 +14,7 @@ import pt.uevora.sd.mainmodule.Repositories.*;
 
 @RestController
 @RequestMapping(path = "/api/v1")
-public class CentroController {
+public class MainController {
 
     @Autowired
     private CentrosRepository centrosRepository;
@@ -48,4 +48,18 @@ public class CentroController {
 	void deleteCentro(@RequestParam Long id) {
 		centrosRepository.deleteById(id);
 	}
+
+    @GetMapping(
+        path = "/nTotalVacinas",
+        produces = "application/json")
+    Centros getCentroByNome(@RequestParam String nome){
+        return centrosRepository.findOneByNome(nome);
+    }
+
+    @GetMapping(
+        path = "/fornecerVacinas",
+        produces = "application/json")
+    Centros getCentroByNome(@RequestParam String nome){
+        return centrosRepository.findOneByNome(nome);
+    }
 }
