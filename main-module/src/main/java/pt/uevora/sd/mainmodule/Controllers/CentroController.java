@@ -45,8 +45,8 @@ public class CentroController {
         return centrosRepository.findOneByNome(nome);
     }
 
-	@DeleteMapping("/deleteCentro/{id}")
-	void deleteEmployee(@PathVariable Long id) {
+	@DeleteMapping("/deleteCentro")
+	void deleteCentro(@RequestParam Long id) {
 		centrosRepository.deleteById(id);
 	}
 }
