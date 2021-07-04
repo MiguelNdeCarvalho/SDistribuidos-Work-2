@@ -52,14 +52,14 @@ public class MainController {
     @GetMapping(
         path = "/nTotalVacinas",
         produces = "application/json")
-    Centros getCentroByNome(@RequestParam String nome){
+    Centros getTotalVacinas(@RequestParam String nome){
         return centrosRepository.findOneByNome(nome);
     }
 
     @GetMapping(
         path = "/fornecerVacinas",
         produces = "application/json")
-    Centros getCentroByNome(@RequestParam String nome){
+    Centros getFornecerVacinas(@RequestParam String nome){
         return centrosRepository.findOneByNome(nome);
     }
 }
