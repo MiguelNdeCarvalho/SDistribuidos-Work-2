@@ -1,5 +1,5 @@
 import requests
-response = requests.get(f"http://localhost:8080/api/v1/getCentros")
+response = requests.get("http://localhost:8080/api/v1/getCentros")
 
 centros = []
 
@@ -11,8 +11,8 @@ for centro in centros:
     print(f"{choice}-> {centro['nome']}")
     choice += 1
 
-params = { "nome": "Centro de Vacinação do João Pavia Pereira"}
+params = {"nome": "Centro de Vacinação do João Pavia Pereira"}
 
-centro = requests.get("http://localhost:8080/api/v1/getCentro/", params=params)
+centro = requests.get("http://localhost:8080/api/v1/getCentro", params=params)
 
 print(centro.json())
