@@ -1,6 +1,6 @@
-package pt.uevora.sd.centermodule;
-import java.time.LocalDateTime;
+package pt.uevora.sd.centermodule.Models;
 
+import java.time.LocalDateTime;
 import javax.persistence.Column;
 import javax.persistence.Entity;
 import javax.persistence.Id;

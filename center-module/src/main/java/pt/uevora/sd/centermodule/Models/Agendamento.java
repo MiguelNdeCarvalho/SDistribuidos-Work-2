@@ -1,4 +1,5 @@
-package pt.uevora.sd.centermodule;
+package pt.uevora.sd.centermodule.Models;
+
 import java.time.LocalDateTime;
 import javax.persistence.Column;
 import javax.persistence.Entity;
