@@ -1,7 +1,6 @@
-package pt.uevora.sd.mainmodule;
-import java.time.LocalDate;
-import java.time.LocalDateTime;
+package pt.uevora.sd.mainmodule.Models;
 
+import java.time.LocalDateTime;
 import javax.persistence.Column;
 import javax.persistence.Entity;
 import javax.persistence.GeneratedValue;

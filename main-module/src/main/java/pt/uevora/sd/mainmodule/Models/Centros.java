@@ -1,4 +1,5 @@
-package pt.uevora.sd.mainmodule;
+package pt.uevora.sd.mainmodule.Models;
+
 import javax.persistence.Column;
 import javax.persistence.Entity;
 import javax.persistence.GeneratedValue;
