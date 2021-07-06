@@ -40,7 +40,7 @@ public class registerCenter {
 
             send.put("nome", nome);
             send.put("localidade", localidade);
-            send.put("vacinados", vacinadospordia.toString());
+            send.put("vacinadosPorDia", vacinadospordia);
             send.put("url", url);
 
             StringWriter out = new StringWriter();
