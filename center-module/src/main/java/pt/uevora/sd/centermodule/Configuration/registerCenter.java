@@ -75,7 +75,7 @@ public class registerCenter {
 
         try{
             JSONParser jsonParser = new JSONParser();
-            Object obj = jsonParser.parse(new FileReader("/home/mike/Documents/University/SDistribuidos-Work-2/center-module/src/main/resources/properties.json", StandardCharsets.UTF_8));
+            Object obj = jsonParser.parse(new FileReader("src/main/resources/properties.json", StandardCharsets.UTF_8));
             JSONObject jsonObject = (JSONObject) obj;
             
             
