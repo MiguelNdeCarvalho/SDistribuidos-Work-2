@@ -3,7 +3,18 @@ package pt.uevora.sd.centermodule.Controllers;
 import java.net.http.HttpResponse;
 import java.time.LocalDateTime;
 import java.util.*;
+import java.io.IOException;
 import java.net.*;
+
+import org.apache.http.impl.client.HttpClients;
+import org.apache.http.Header;
+import org.apache.http.HttpEntity;
+import org.apache.http.HttpHeaders;
+import org.apache.http.client.ClientProtocolException;
+import org.apache.http.client.methods.CloseableHttpResponse;
+import org.apache.http.client.methods.HttpGet;
+import org.apache.http.impl.client.CloseableHttpClient;
+import org.apache.http.util.EntityUtils;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.web.bind.annotation.DeleteMapping;
 import org.springframework.web.bind.annotation.GetMapping;
@@ -26,19 +37,34 @@ public class CenterController {
         path = "/autoAgendamento",
 		consumes = "application/json",
 		produces = "application/json")
-    String newAgendamento(@RequestBody Agendamento newAgendamento){
+    String newAgendamento(@RequestBody Agendamento newAgendamento) throws ClientProtocolException, IOException{
 
         Agendamento same = getAgendamentoByCC(newAgendamento.getCc());
+        
         if (same == null){
+            /*
+            CloseableHttpClient httpClient = HttpClients.createDefault();
+            HttpGet request = new HttpGet("http://localhost:8000/api/v1/getVacinasPorDia");
+    
+            try (CloseableHttpResponse response = httpClient.execute(request)) {
+    
+                // Get HttpResponse Status
+                System.out.println(response.getStatusLine().toString());
+    
+                HttpEntity entity = response.getEntity();
 
-            HttpClient client = HttpClient.newHttpClient();
-            HttpRequest request = HttpRequest.newBuilder()
-                .uri(URI.create("http://localhost:8000/api/v1/getVacinasPorDia"))
-                .addParameter("nome", "ler ficheiro")
-                .build();
+    
+                if (entity != null) {
+                    // return it as a String
+                    String result = EntityUtils.toString(entity);
+                    System.out.println(result);
+                }
+    
+            }
 
-            HttpResponse<String> response = client.send(request, BodyHandlers.ofString());
-            System.out.println(response.body());
+
+
+            */
 
             agendamentoRepository.save(newAgendamento);
         }
@@ -57,14 +83,14 @@ public class CenterController {
     List<Agendamento> getAgendamentos(){
         return (List<Agendamento>) agendamentoRepository.findAll();
     }
-
+/*
     @GetMapping(
         path = "/getAgendamentos",
         produces = "application/json")
     List<Agendamento> getAgendamentosByData(@RequestBody LocalDateTime data){
         return (List<Agendamento>) agendamentoRepository.findAll();
     }
-
+*/
     @GetMapping(
         path = "/getAgendamento")
     Agendamento getAgendamentoByCC(@RequestParam Long cc){
