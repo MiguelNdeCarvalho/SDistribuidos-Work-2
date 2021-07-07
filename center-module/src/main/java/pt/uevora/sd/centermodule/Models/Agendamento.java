@@ -11,8 +11,7 @@ import javax.persistence.Id;
 public class Agendamento {
 
 	@Id
-	@GeneratedValue(strategy=GenerationType.IDENTITY)
-	private Long id;
+	private Long cc;
 
 	@Column(nullable = false)
     private String nome, email;
@@ -22,7 +21,8 @@ public class Agendamento {
 
     protected Agendamento() {}
 
-    public Agendamento(String nome, int idade, String email, LocalDateTime data, boolean confirmacao) {
+    public Agendamento(Long cc,String nome, int idade, String email, LocalDateTime data, boolean confirmacao) {
+        this.cc = cc;
         this.nome = nome;
         this.idade = idade;
         this.email = email;
@@ -33,12 +33,12 @@ public class Agendamento {
     @Override
 	public String toString() {
 		return String.format(
-				"Product[id=%d, nome='%s', idade=%d, email='%s', data='%s', confirmacao='%s']",
-				id, nome, idade, email, data, confirmacao);
+				"Product[cc=%d, nome='%s', idade=%d, email='%s', data='%s', confirmacao='%s']",
+				cc, nome, idade, email, data, confirmacao);
 	}
     
-    public Long getId() {
-		return id;
+    public Long getCc() {
+		return cc;
     }
     
     public String getNome() {

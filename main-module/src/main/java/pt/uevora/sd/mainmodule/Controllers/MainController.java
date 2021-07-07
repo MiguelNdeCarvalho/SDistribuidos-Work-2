@@ -50,6 +50,13 @@ public class MainController {
 	}
 
     @GetMapping(
+        path = "/getVacinasPorDia")
+    Long getVacinasPorDiaByNome(@RequestParam String nome){
+        return centrosRepository.findOneByNome(nome).getVacinadosPorDia();
+    }
+
+
+    @GetMapping(
         path = "/nTotalVacinas",
         produces = "application/json")
     Centros getTotalVacinas(@RequestParam String nome){
