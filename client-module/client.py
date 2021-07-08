@@ -15,6 +15,8 @@ def startUI():
         print(f"{choice}-> {item['nome']}")
         choice += 1
 
+    
+
     choice = int(input("Escolha o centro que se deseja conectar: "))
     print(centros[choice-1]['url'])
 
@@ -24,14 +26,14 @@ def startUI():
 
         print("-------------------------")
         print("1) Auto Agendamento")
-        print("2) Confirmar Agendamento")
+        print("2) Informação do Agendamento")
         print("3) Exit")
 
         option = input("Option: ")
 
         if option == "1" :
             
-            cc = long(input("Insira o numero do cartão de cidadão: "))
+            cc = int(input("Insira o numero do cartão de cidadão: "))
             nome = input("Insira o nome: ")
             idade = int(input("Insira a idade: "))
             email = input("Insira o email: ")
@@ -41,8 +43,13 @@ def startUI():
             print(response.json())
 
         elif option == "2" :
-            centerURL = centros[choice-1]['url']
-            cc = long(input("Insira o numero do cartão de cidadão: "))
+            
+            cc = int((input("Insira o numero do cartão de cidadão: ")))
+            requestUrl = centerURL + "getAgendamentoStatus"
+            params = {"cc": cc}            
+            response = requests.get(requestUrl,params=params)
+            
+            print(response.text)
 
 
         elif option == "3" :

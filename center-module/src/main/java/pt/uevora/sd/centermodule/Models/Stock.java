@@ -1,6 +1,6 @@
 package pt.uevora.sd.centermodule.Models;
 
-import java.time.LocalDateTime;
+import java.time.LocalDate;
 import javax.persistence.Column;
 import javax.persistence.Entity;
 import javax.persistence.Id;
@@ -9,7 +9,7 @@ import javax.persistence.Id;
 public class Stock {
 
 	@Id
-	private LocalDateTime data;
+	private LocalDate data;
 
 	@Column(nullable = false)
     private long nVacinas;
@@ -17,7 +17,7 @@ public class Stock {
 
     protected Stock() {}
 
-    public Stock(LocalDateTime data, long nVacinas, String tipoVacinas) {
+    public Stock(LocalDate data, long nVacinas, String tipoVacinas) {
         this.data = data;
         this.nVacinas = nVacinas;
         this.tipoVacinas = tipoVacinas;
@@ -30,7 +30,7 @@ public class Stock {
                 data.toString(), nVacinas, tipoVacinas);
 	}
     
-    public LocalDateTime getData() {
+    public LocalDate getData() {
         return data;
     }
 

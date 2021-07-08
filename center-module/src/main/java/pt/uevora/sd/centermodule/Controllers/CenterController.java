@@ -2,7 +2,6 @@ package pt.uevora.sd.centermodule.Controllers;
 
 import java.net.http.HttpResponse;
 import java.time.LocalDate;
-import java.time.LocalDateTime;
 import java.util.*;
 import java.io.IOException;
 import java.net.*;
@@ -102,11 +101,22 @@ public class CenterController {
         return agendamentoRepository.findOneByCc(cc);
     }
 
+    @GetMapping(
+        path = "/getAgendamentoStatus")
+    String getAgendamentoStatusByCC(@RequestParam Long cc){
+        
+        Boolean status = agendamentoRepository.findOneByCc(cc).getConfirmacao();
+        if (status == null){
+            return "nada";
+        }
+        return status.toString();
+    }
+
     @PostMapping(
         path = "/setStock",
 		consumes = "application/json")
     String setStock(@RequestBody Stock newStock){
-        //stockRepository.save(newStock);
+        stockRepository.save(newStock);
 
         List<Agendamento> agendamentos = agendamentoRepository.findAllByOrderByIdadeDesc();
         int count = 0;
@@ -115,6 +125,7 @@ public class CenterController {
 
             if (count < newStock.getnVacinas())
             {
+                //send email
                 agendamento.setConfirmacao(true);
             }
             else
@@ -133,7 +144,7 @@ public class CenterController {
         path = "/getStock/{data}")
     Stock getStock(@PathVariable String data){
         
-        return stockRepository.findOneByData(LocalDateTime.parse(data));
+        return stockRepository.findOneByData(LocalDate.parse(data));
     }
 
     /*
