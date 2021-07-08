@@ -1,18 +1,26 @@
 package pt.uevora.sd.mainmodule.Controllers;
 
 import java.io.IOException;
-import java.util.HashMap;
+import java.io.StringWriter;
+import java.lang.reflect.Array;
+import java.util.ArrayList;
+import java.util.Arrays;
+import java.util.Collections;
+import java.util.Comparator;
 import java.util.List;
-
-import com.fasterxml.jackson.databind.util.JSONPObject;
-
 import org.apache.http.HttpEntity;
+import org.apache.http.NameValuePair;
 import org.apache.http.client.ClientProtocolException;
+import org.apache.http.client.entity.UrlEncodedFormEntity;
 import org.apache.http.client.methods.CloseableHttpResponse;
 import org.apache.http.client.methods.HttpGet;
+import org.apache.http.client.methods.HttpPost;
+import org.apache.http.entity.StringEntity;
 import org.apache.http.impl.client.CloseableHttpClient;
 import org.apache.http.impl.client.HttpClients;
+import org.apache.http.message.BasicNameValuePair;
 import org.apache.http.util.EntityUtils;
+import org.json.JSONException;
 import org.json.simple.JSONArray;
 import org.json.simple.JSONObject;
 import org.json.simple.parser.JSONParser;
@@ -26,8 +34,6 @@ import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.bind.annotation.RestController;
-
-import net.bytebuddy.TypeCache.Sort;
 import pt.uevora.sd.mainmodule.Models.*;
 import pt.uevora.sd.mainmodule.Repositories.*;
 
@@ -85,7 +91,7 @@ public class MainController {
     @GetMapping(
         path = "/fornecerVacinas",
         produces = "application/json")
-    void getFornecerVacinas(@RequestParam String n_vacinas, String data) throws ClientProtocolException, IOException, ParseException{
+    void getFornecerVacinas(@RequestParam Long n_vacinas, String data) throws ClientProtocolException, IOException, ParseException{
         
         List<Centros> centros = (List<Centros>) centrosRepository.findAll();
         JSONArray global = new JSONArray();
@@ -102,13 +108,12 @@ public class MainController {
                 if (entity != null) {
                     // return it as a String
                     String result = EntityUtils.toString(entity);
-                    System.out.println(result);
 
                     JSONArray jsonArr = (JSONArray) new JSONParser().parse( result );
 
                     for (int i = 0; i < jsonArr.size(); i++) {
                         JSONObject n =  (JSONObject) jsonArr.get(i);
-                        n.put("centro", centro.getNome());
+                        n.put("centroId", centro.getId());
                         global.add(n);
 
                     }
@@ -116,44 +121,70 @@ public class MainController {
             }
         }
 
-        JSONArray jsonArr = new JSONArray(jsonArrStr);
-        JSONArray sortedJsonArray = new JSONArray();
-
-        List<JSONObject> jsonValues = new ArrayList<JSONObject>();
-        for (int i = 0; i < jsonArr.length(); i++) {
-            jsonValues.add(jsonArr.getJSONObject(i));
-        }
-        global.sort( jsonValues, new Comparator<JSONObject>() {
+        Collections.sort( global,new Comparator<JSONObject>() {
             //You can change "Name" with "ID" if you want to sort by ID
-            private static final String KEY_NAME = "Name";
+            private static final String KEY_NAME = "idade";
 
             @Override
             public int compare(JSONObject a, JSONObject b) {
-                String valA = new String();
-                String valB = new String();
+                Long valA = (long) 0;
+                Long valB = (long) 0;
 
                 try {
-                    valA = (String) a.get(KEY_NAME);
-                    valB = (String) b.get(KEY_NAME);
+                    valA = (Long) a.get(KEY_NAME);
+                    valB = (Long) b.get(KEY_NAME);
                 } 
                 catch (JSONException e) {
                     //do something
                 }
 
-                return valA.compareTo(valB);
-                //if you want to change the sort order, simply use the following:
-                //return -valA.compareTo(valB);
+                System.out.println(valA);
+                System.out.println(valB);
+
+                return -valA.compareTo(valB);
+
             }
         });
-
-        for (int i = 0; i < jsonArr.length(); i++) {
-            sortedJsonArray.put(jsonValues.get(i));
-        }
         
-        //merge
+        //System.out.println(global.toJSONString());
+        
+        int contagem[] = new int[centros.size()];
+        Arrays.fill(contagem, 0);
 
+        for(int i = 0; i < n_vacinas; i++)
+        {
+            JSONObject n =  (JSONObject) global.get(i);
+            Long id = (Long) n.get("centroId");
+            contagem[(int)(id-1)]++;
+        }
+
+        //System.out.println(Arrays.toString(contagem));
         //contagem
         
+        for(int i = 0; i < contagem.length; i++)
+        {
+            CloseableHttpClient client = HttpClients.createDefault();
+            HttpPost post = new HttpPost(centros.get(i).getUrl() + "setStock");
 
+            JSONObject send = new JSONObject();
+            Long num = centros.get(i).getId();
+            send.put("data", data);
+            send.put("nVacinas", num);
+            send.put("tipoVacinas", "braps");
+
+            StringWriter out = new StringWriter();
+            send.writeJSONString(out);
+            
+            String sendObj = out.toString();
+
+            StringEntity entity = new StringEntity(sendObj, "UTF-8");
+
+            post.setEntity(entity);
+            post.setHeader("Accept", "application/json");
+            post.setHeader("Content-type", "application/json");
+    
+            client.execute(post);
+            client.close();
+        }
     }
 }

@@ -1,6 +1,7 @@
 package pt.uevora.sd.centermodule.Controllers;
 
 import java.net.http.HttpResponse;
+import java.time.LocalDate;
 import java.time.LocalDateTime;
 import java.util.*;
 import java.io.IOException;
@@ -18,6 +19,7 @@ import org.apache.http.util.EntityUtils;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.web.bind.annotation.DeleteMapping;
 import org.springframework.web.bind.annotation.GetMapping;
+import org.springframework.web.bind.annotation.PathVariable;
 import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RequestMapping;
@@ -32,6 +34,9 @@ public class CenterController {
 
     @Autowired
     private AgendamentoRepository agendamentoRepository;
+
+    @Autowired
+    private StockRepository stockRepository;
 
     @PostMapping(
         path = "/autoAgendamento",
@@ -97,6 +102,39 @@ public class CenterController {
         return agendamentoRepository.findOneByCc(cc);
     }
 
+    @PostMapping(
+        path = "/setStock",
+		consumes = "application/json")
+    String setStock(@RequestBody Stock newStock){
+        //stockRepository.save(newStock);
+
+        List<Agendamento> agendamentos = agendamentoRepository.findAllByOrderByIdadeDesc();
+        int count = 0;
+        for (Agendamento agend : agendamentos) {
+            Agendamento agendamento = agendamentoRepository.findOneByCc(agend.getCc());
+
+            if (count < newStock.getnVacinas())
+            {
+                agendamento.setConfirmacao(true);
+            }
+            else
+            {
+                agendamento.setConfirmacao(false);
+                //send email
+            }
+            agendamentoRepository.save(agendamento);
+            count++;
+        }
+
+        return "saved";
+    }
+
+    @GetMapping(
+        path = "/getStock/{data}")
+    Stock getStock(@PathVariable String data){
+        
+        return stockRepository.findOneByData(LocalDateTime.parse(data));
+    }
 
     /*
     @GetMapping(

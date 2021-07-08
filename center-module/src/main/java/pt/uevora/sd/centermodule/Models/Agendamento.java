@@ -3,8 +3,6 @@ package pt.uevora.sd.centermodule.Models;
 import java.time.LocalDateTime;
 import javax.persistence.Column;
 import javax.persistence.Entity;
-import javax.persistence.GeneratedValue;
-import javax.persistence.GenerationType;
 import javax.persistence.Id;
 
 @Entity
@@ -13,15 +11,16 @@ public class Agendamento {
 	@Id
 	private Long cc;
 
+    private Boolean confirmacao;
+
 	@Column(nullable = false)
     private String nome, email;
     private int idade;
     private LocalDateTime data;
-    private boolean confirmacao;
 
     protected Agendamento() {}
 
-    public Agendamento(Long cc,String nome, int idade, String email, LocalDateTime data, boolean confirmacao) {
+    public Agendamento(Long cc,String nome, int idade, String email, LocalDateTime data, Boolean confirmacao) {
         this.cc = cc;
         this.nome = nome;
         this.idade = idade;
@@ -57,7 +56,32 @@ public class Agendamento {
         return data;
     }
 
-    public boolean getConfirmacao() {
+    public Boolean getConfirmacao() {
         return confirmacao;
+    }
+
+    //--------------------------
+    public void setCc(Long cc) {
+        this.cc = cc;
+    }
+
+    public void setNome(String nome) {
+        this.nome = nome;
+    }
+
+    public void setIdade(int idade) {
+        this.idade = idade;
+    }
+
+    public void setEmail(String email) {
+        this.email = email;
+    }
+
+    public void setData(LocalDateTime data) {
+        this.data = data;
+    }
+
+    public void setConfirmacao(Boolean confirmacao) {
+        this.confirmacao = confirmacao;
     }
 }
