@@ -1,22 +1,13 @@
 package pt.uevora.sd.centermodule.Controllers;
 
-import java.net.http.HttpResponse;
 import java.time.LocalDate;
 import java.util.*;
-import java.io.IOException;
-import java.net.*;
 
-import org.apache.http.impl.client.HttpClients;
-import org.apache.http.Header;
-import org.apache.http.HttpEntity;
-import org.apache.http.HttpHeaders;
+import com.mashape.unirest.http.Unirest;
+import com.mashape.unirest.http.exceptions.UnirestException;
+import java.io.IOException;
 import org.apache.http.client.ClientProtocolException;
-import org.apache.http.client.methods.CloseableHttpResponse;
-import org.apache.http.client.methods.HttpGet;
-import org.apache.http.impl.client.CloseableHttpClient;
-import org.apache.http.util.EntityUtils;
 import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.web.bind.annotation.DeleteMapping;
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.PathVariable;
 import org.springframework.web.bind.annotation.PostMapping;
@@ -24,6 +15,7 @@ import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.bind.annotation.RestController;
+import pt.uevora.sd.centermodule.Components.ReadJSONProperties;
 import pt.uevora.sd.centermodule.Models.*;
 import pt.uevora.sd.centermodule.Repositories.*;
 
@@ -32,10 +24,31 @@ import pt.uevora.sd.centermodule.Repositories.*;
 public class CenterController {
 
     @Autowired
+    private ReadJSONProperties jsonProperties;
+
+    @Autowired
     private AgendamentoRepository agendamentoRepository;
 
     @Autowired
     private StockRepository stockRepository;
+
+    public void sendMail(String recipientMail, String subject, String text){
+        String mail = jsonProperties.getMailgunmail();
+        String url = jsonProperties.getMailgunurl();
+        String api = jsonProperties.getMailgunkey();
+
+        try {
+            Unirest.post(url + "/messages")
+            .basicAuth("api", api)
+            .queryString("from", "No-Reply <" + mail + ">")
+            .queryString("to", recipientMail)
+            .queryString("subject", subject)
+            .queryString("text", text).asJson();
+        } catch (UnirestException e) {
+            e.printStackTrace();
+        }
+
+	}
 
     @PostMapping(
         path = "/autoAgendamento",
@@ -122,16 +135,22 @@ public class CenterController {
         int count = 0;
         for (Agendamento agend : agendamentos) {
             Agendamento agendamento = agendamentoRepository.findOneByCc(agend.getCc());
+            String name = agend.getNome();
+            String email = agend.getEmail();
+            String subject = "Agendamento da vacinação";
+            String date = agend.getData().toString();
+            String bodyConfirmed = "Caro(a) %s,\nExmo. Senhor,\n\nServe o presente para informar que o agendamento para o dia %s se encontra confirmado.\n\nCom os melhores cumprimentos";
+            String bodyNotConfirmed = "Caro(a) %s,\nExmo. Senhor,\n\nServe o presente para informar que o agendamento para o dia %s necessita ser reagendado. O reagendamento deverá ser feito através do portal.\n\nCom os melhores cumprimentos";
 
             if (count < newStock.getnVacinas())
             {
-                //send email
+                sendMail(email, subject, String.format(bodyConfirmed, name, date));
                 agendamento.setConfirmacao(true);
             }
             else
             {
+                sendMail(email, subject, String.format(bodyNotConfirmed, name, date));
                 agendamento.setConfirmacao(false);
-                //send email
             }
             agendamentoRepository.save(agendamento);
             count++;
