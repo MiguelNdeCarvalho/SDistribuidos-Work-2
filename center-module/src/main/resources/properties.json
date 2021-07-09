@@ -1,6 +1,8 @@
 {
-  "nome": "Centro de Vacinação de Évora",
-  "localidade": "Évora",
-  "vacinadospordia": 100,
-  "url": "http://localhost:8080/api/v1/"
+  "nome" : "Centro de Vacinação de Évora",
+  "localidade" : "Évora",
+  "maxvacinas" : 100,
+  "url" : "http://localhost:8080/api/v1/",
+  "mailgunkey" : "teste",
+  "mailgunurl" : "teste"
 }
