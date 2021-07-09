@@ -1,5 +1,5 @@
+import datetime
 import requests
-from datetime import date
 
 def startUI():
     option = 0
@@ -38,7 +38,7 @@ def startUI():
             idade = int(input("Insira a idade: "))
             email = input("Insira o email: ")
 
-            params = {"nome": nome,"idade": idade, "data": datetime.now(),"email": email}            
+            params = {"nome": nome,"idade": idade, "data": datetime.date.today(),"email": email}            
             response = requests.get("http://localhost:8000/api/v1/autoAgendamento",params=params)
             print(response.json())
 
@@ -52,7 +52,7 @@ def startUI():
             print(response.text)
             if response.text == "null":
                 print("O pedido ainda não foi processado")
-            elif response.text == "true"
+            elif response.text == "true":
                 print("O pedido foi confirmado")
             else:
                 print("É necessário remarcar")
