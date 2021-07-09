@@ -38,9 +38,9 @@ def startUI():
             idade = int(input("Insira a idade: "))
             email = input("Insira o email: ")
 
-            params = {"nome": nome,"idade": idade, "data": datetime.date.today(),"email": email}            
-            response = requests.get("http://localhost:8000/api/v1/autoAgendamento",params=params)
-            print(response.json())
+            request = {"cc": cc, "nome": nome, "idade": idade, "email": email, "data": f"{datetime.date.today()}"}            
+
+            response = requests.post(f"{centerURL}autoAgendamento", json=request)
 
         elif option == "2" :
             
