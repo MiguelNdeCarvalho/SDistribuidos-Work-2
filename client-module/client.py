@@ -50,7 +50,12 @@ def startUI():
             response = requests.get(requestUrl,params=params)
             
             print(response.text)
-
+            if response.text == "null":
+                print("O pedido ainda não foi processado")
+            elif response.text == "true"
+                print("O pedido foi confirmado")
+            else:
+                print("É necessário remarcar")
 
         elif option == "3" :
             break

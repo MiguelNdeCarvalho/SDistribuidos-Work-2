@@ -79,8 +79,37 @@ public class MainController {
     @GetMapping(
         path = "/nTotalVacinas",
         produces = "application/json")
-    Centros getTotalVacinas(@RequestParam String nome){
-        return centrosRepository.findOneByNome(nome);
+    void getTotalVacinas() throws ClientProtocolException, IOException, ParseException{
+
+        List<Centros> centros = (List<Centros>) centrosRepository.findAll();
+        JSONArray global = new JSONArray();
+        
+        for (Centros centro : centros) {    
+            //pedido getAgendamentosByData
+            CloseableHttpClient httpClient = HttpClients.createDefault();
+            HttpGet request = new HttpGet(centro.getUrl() + "getStocks");
+    
+            try (CloseableHttpResponse response = httpClient.execute(request)) {
+    
+                // Get HttpResponse Status
+                HttpEntity entity = response.getEntity();
+                if (entity != null) {
+                    // return it as a String
+                    String result = EntityUtils.toString(entity);
+
+                    JSONArray jsonArr = (JSONArray) new JSONParser().parse( result );
+
+                    for (int i = 0; i < jsonArr.size(); i++) {
+                        JSONObject n =  (JSONObject) jsonArr.get(i);
+                        n.put("centroNome", centro.getNome());
+                        global.add(n);
+
+                    }
+                }
+            }
+        }
+
+        System.out.println(global.toJSONString());
     }
 
     @GetMapping(
