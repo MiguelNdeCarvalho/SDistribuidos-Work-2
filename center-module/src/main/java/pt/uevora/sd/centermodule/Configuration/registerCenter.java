@@ -1,6 +1,5 @@
 package pt.uevora.sd.centermodule.Configuration;
 
-import java.io.FileReader;
 import java.io.IOException;
 import java.io.StringWriter;
 import java.net.URLEncoder;
@@ -15,12 +14,17 @@ import org.apache.http.entity.StringEntity;
 import org.apache.http.impl.client.CloseableHttpClient;
 import org.apache.http.impl.client.HttpClients;
 import org.apache.http.util.EntityUtils;
+import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.context.annotation.Configuration;
+import pt.uevora.sd.centermodule.Components.ReadJSONProperties;
+
 import org.json.simple.JSONObject;
-import org.json.simple.parser.JSONParser;
 
 @Configuration
 public class registerCenter {
+
+    @Autowired
+    ReadJSONProperties jsonProperties;
 
     private boolean isRegistered(String nome) throws ClientProtocolException, IOException{
         HttpGet request = new HttpGet("http://localhost:8000/api/v1/getCentro/" + URLEncoder.encode(nome, StandardCharsets.UTF_8).replace("+", "%20"));
@@ -68,28 +72,15 @@ public class registerCenter {
     }
 
     @PostConstruct
-    public void init(){
+    public void init() throws ClientProtocolException, IOException{
         
-        String nome, localidade, url;
-        Long vacinadospordia;
+        String nome = jsonProperties.getNome();
+        String localidade = jsonProperties.getLocalidade();
+        Long vacinadospordia = jsonProperties.getMaxvacinas();
+        String url = jsonProperties.getUrl();
 
-        try{
-            JSONParser jsonParser = new JSONParser();
-            Object obj = jsonParser.parse(new FileReader("src/main/resources/properties.json", StandardCharsets.UTF_8));
-            JSONObject jsonObject = (JSONObject) obj;
-            
-            
-            nome = (String) jsonObject.get("nome");
-            localidade = (String) jsonObject.get("localidade");
-            vacinadospordia = (Long) jsonObject.get("vacinadospordia");
-            url = (String) jsonObject.get("url");
-
-            if (! isRegistered(nome))
+        if (! isRegistered(nome))
                 register(nome, localidade, vacinadospordia, url);
-
-        } catch(Exception e) {
-            e.printStackTrace();
-        }
 
     }
 }
