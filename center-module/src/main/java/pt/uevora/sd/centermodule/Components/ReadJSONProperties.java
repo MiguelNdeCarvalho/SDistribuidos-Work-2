@@ -17,6 +17,8 @@ public class ReadJSONProperties {
 
     private String url;
 
+    private String mailgunmail;
+
     private String mailgunkey;
 
     private String mailgunurl;
@@ -35,6 +37,10 @@ public class ReadJSONProperties {
 
     public String getUrl() {
         return url.replace("\"", "").replace(",", "");
+    }
+
+    public String getMailgunmail() {
+        return mailgunmail.replace("\"", "").replace(",", "");
     }
 
     public String getMailgunkey() {
@@ -59,6 +65,10 @@ public class ReadJSONProperties {
 
     public void setUrl(String url) {
         this.url = url;
+    }
+
+    public void setMailgunmail(String mailgunmail) {
+        this.mailgunmail = mailgunmail;
     }
 
     public void setMailgunkey(String mailgunkey) {
