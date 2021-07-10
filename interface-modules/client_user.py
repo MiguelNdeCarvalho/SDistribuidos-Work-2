@@ -48,14 +48,15 @@ def startUI():
             requestUrl = centerURL + "getAgendamentoStatus"
             params = {"cc": cc}            
             response = requests.get(requestUrl,params=params)
-            
-            print(response.text)
+
             if response.text == "null":
-                print("O pedido ainda não foi processado")
+                print("O seu agendamento ainda se encontra pendente!")
             elif response.text == "true":
-                print("O pedido foi confirmado")
+                print("O seu agendamento encontra-se confirmado!")
+            elif response.text == "false":
+                print("É necessário proceder à remarcação do agendamento!")
             else:
-                print("É necessário remarcar")
+                print("Resposta inválida")
 
         elif option == "3" :
             break
