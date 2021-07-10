@@ -9,6 +9,7 @@ import java.io.IOException;
 import org.apache.http.client.ClientProtocolException;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.web.bind.annotation.GetMapping;
+import org.springframework.web.bind.annotation.PutMapping;
 import org.springframework.web.bind.annotation.PathVariable;
 import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.RequestBody;
@@ -99,6 +100,26 @@ public class CenterController {
         produces = "application/json")
     List<Agendamento> getAgendamentos(){
         return (List<Agendamento>) agendamentoRepository.findAll();
+    }
+
+    @PutMapping(
+        path = "/updateAgendamento",
+        produces = "application/json")
+    String setDataAgendamento(@RequestParam Long cc, String data){
+        
+        Agendamento found = getAgendamentoByCC(cc);
+        if (found == null)
+        {
+            return "Não existe";
+        }
+        else
+        {
+            found.setConfirmacao(null);
+            found.setData(LocalDate.parse(data));
+            agendamentoRepository.save(found);
+
+        }
+        return "Data alterada, espere pela confirmação";
     }
 /*
     @GetMapping(
