@@ -120,7 +120,7 @@ public class CenterController {
         
         Boolean status = agendamentoRepository.findOneByCc(cc).getConfirmacao();
         if (status == null){
-            return "nada";
+            return "null";
         }
         return status.toString();
     }
