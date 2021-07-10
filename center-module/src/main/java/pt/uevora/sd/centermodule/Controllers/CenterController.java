@@ -118,11 +118,11 @@ public class CenterController {
         path = "/getAgendamentoStatus")
     String getAgendamentoStatusByCC(@RequestParam Long cc){
         
-        Boolean status = agendamentoRepository.findOneByCc(cc).getConfirmacao();
-        if (status == null){
-            return "null";
+        Agendamento agendamento = agendamentoRepository.findOneByCc(cc);
+        if (agendamento == null){
+            return "Not Found";
         }
-        return status.toString();
+        return agendamento.getConfirmacao().toString();
     }
 
     @PostMapping(
