@@ -115,7 +115,7 @@ public class MainController {
     @GetMapping(
         path = "/fornecerVacinas",
         produces = "application/json")
-    void getFornecerVacinas(@RequestParam Long n_vacinas, String data) throws ClientProtocolException, IOException, ParseException{
+    void getFornecerVacinas(@RequestParam Long n_vacinas, @RequestParam String data, @RequestParam String tipo) throws ClientProtocolException, IOException, ParseException{
         
         List<Centros> centros = (List<Centros>) centrosRepository.findAll();
         JSONArray global = new JSONArray();
@@ -191,10 +191,10 @@ public class MainController {
             HttpPost post = new HttpPost(centros.get(i).getUrl() + "setStock");
 
             JSONObject send = new JSONObject();
-            Long num = centros.get(i).getId();
+            Long num = (long) contagem[centros.get(i).getId().intValue() - 1];
             send.put("data", data);
             send.put("nVacinas", num);
-            send.put("tipoVacinas", "braps");
+            send.put("tipoVacinas", tipo);
 
             StringWriter out = new StringWriter();
             send.writeJSONString(out);
