@@ -1,9 +1,9 @@
 {
   "nome" : "Centro de Vacinação de Évora",
   "localidade" : "Évora",
-  "maxvacinas" : 100,
+  "maxvacinas" : 1000,
   "url" : "http://localhost:8080/api/v1/",
-  "mailgunmail" : "mail",
-  "mailgunkey" : "key",
-  "mailgunurl" : "url"
+  "mailgunmail" : "no-reply@sd.miguelndecarvalho.pt",
+  "mailgunkey" : "53e173ce0fc222b43b51bd2d78647866-c4d287b4-fbee1d9f",
+  "mailgunurl" : "https://api.eu.mailgun.net/v3/sd.miguelndecarvalho.pt"
 }
