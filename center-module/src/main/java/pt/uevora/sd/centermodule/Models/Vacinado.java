@@ -3,23 +3,25 @@ package pt.uevora.sd.centermodule.Models;
 import java.time.LocalDate;
 import javax.persistence.Column;
 import javax.persistence.Entity;
+import javax.persistence.GeneratedValue;
+import javax.persistence.GenerationType;
 import javax.persistence.Id;
 
 @Entity
 public class Vacinado {
-
-	@Id
-	private Long cc;
+    @Id
+    @GeneratedValue(strategy=GenerationType.SEQUENCE)
+    private Long codigo;
 
 	@Column(nullable = false)
-    String codigo, tipoVacina;
-    LocalDate data;
+    private Long cc;
+    private LocalDate data;
+    private String tipoVacina;
 
     protected Vacinado() {}
 
-    public Vacinado(Long cc, String codigo, LocalDate data, String tipoVacina) {
+    public Vacinado(Long cc, LocalDate data, String tipoVacina) {
         this.cc = cc;
-        this.codigo = codigo;
         this.data = data;
         this.tipoVacina = tipoVacina;
     }
@@ -27,7 +29,7 @@ public class Vacinado {
     @Override
 	public String toString() {
 		return String.format(
-				"Product[cc=%d, codigo='%s', data='%s', tipoVacina='%s']",
+				"Product[cc=%d, codigo='%d', data='%s', tipoVacina='%s']",
 				cc, codigo, data, tipoVacina);
 	}
     
@@ -35,7 +37,7 @@ public class Vacinado {
 		return cc;
     }
     
-    public String getCodigo() {
+    public Long getCodigo() {
         return codigo;
     }
 

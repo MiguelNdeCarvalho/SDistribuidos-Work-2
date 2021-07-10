@@ -69,10 +69,14 @@ public class MainController {
 		centrosRepository.deleteById(id);
 	}
 
-    @GetMapping(
-        path = "/getVacinasPorDia")
-    Long getVacinasPorDiaByNome(@RequestParam String nome){
-        return centrosRepository.findOneByNome(nome).getVacinadosPorDia();
+    @PostMapping(
+        path = "/getVacinasPorDia",
+        consumes = "application/json")
+    Long getVacinasPorDiaByNome(@RequestBody String nome) throws ParseException{
+        JSONParser parser = new JSONParser();
+        JSONObject json = (JSONObject) parser.parse(nome);
+        System.out.println(nome);
+        return centrosRepository.findOneByNome(json.get("nome").toString()).getVacinadosPorDia();
     }
 
 
@@ -115,7 +119,7 @@ public class MainController {
     @GetMapping(
         path = "/fornecerVacinas",
         produces = "application/json")
-    void getFornecerVacinas(@RequestParam Long n_vacinas, @RequestParam String data, @RequestParam String tipo) throws ClientProtocolException, IOException, ParseException{
+    void getFornecerVacinas(@RequestParam Long n_vacinas, String data) throws ClientProtocolException, IOException, ParseException{
         
         List<Centros> centros = (List<Centros>) centrosRepository.findAll();
         JSONArray global = new JSONArray();
@@ -188,13 +192,13 @@ public class MainController {
         for(int i = 0; i < contagem.length; i++)
         {
             CloseableHttpClient client = HttpClients.createDefault();
-            HttpPost post = new HttpPost(centros.get(i).getUrl() + "setStock");
+            HttpPost post = new HttpPost("http://localhost:8000/api/v1/" + "setStock");
 
             JSONObject send = new JSONObject();
-            Long num = (long) contagem[centros.get(i).getId().intValue() - 1];
+            Long num = centros.get(i).getId();
             send.put("data", data);
             send.put("nVacinas", num);
-            send.put("tipoVacinas", tipo);
+            send.put("tipoVacinas", "braps");
 
             StringWriter out = new StringWriter();
             send.writeJSONString(out);

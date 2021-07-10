@@ -27,7 +27,9 @@ def startUI():
         print("-------------------------")
         print("1) Lista de Agendamentos")
         print("2) Stock de vacinas")
-        print("3) Exit")
+        print("3) Vacinação")
+        print("4) Exit")
+
 
         option = input("Option: ")
 
@@ -43,8 +45,17 @@ def startUI():
             
             print(response.text)
 
-
         elif option == "3" :
+            cc = int((input("Insira o numero do cartão de cidadão: ")))
+            tipo = input("Insira o tipo da vacina: ")
+
+            #tipo de vacina
+
+            params = {"tipoVacina": tipo}            
+            response = requests.post(f"{centerURL}setVacinado/{cc}",params=params)
+            print(response.text)
+
+        elif option == "4" :
             break
 
         else: 
