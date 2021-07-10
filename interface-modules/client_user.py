@@ -1,5 +1,6 @@
 import datetime
 import requests
+import dateutil.parser as timeparser
 
 def startUI():
     option = 0
@@ -18,7 +19,6 @@ def startUI():
     
 
     choice = int(input("Escolha o centro que se deseja conectar: "))
-    print(centros[choice-1]['url'])
 
     centerURL = centros[choice-1]['url']
 
@@ -29,7 +29,7 @@ def startUI():
         print("2) Informação do Agendamento")
         print("3) Exit")
 
-        option = input("Option: ")
+        option = input("Opção: ")
 
         if option == "1" :
             
@@ -49,17 +49,29 @@ def startUI():
             params = {"cc": cc}            
             response = requests.get(requestUrl,params=params)
 
-            if response.text == "null":
+            if response.text == "Not Found":
+                print("Não existe um agendamento para esse número do cartão de cidadão")
+            elif response.text == "null":
                 print("O seu agendamento ainda se encontra pendente!")
             elif response.text == "true":
                 print("O seu agendamento encontra-se confirmado!")
             elif response.text == "false":
                 print("É necessário proceder à remarcação do agendamento!")
+                print("Deseja proceder à remarcação?")
+                print("s) Proceder ao reagendamento\nn) Voltar ao menu anterior")
+                option = input("Opção: ")
+
+                if option == "s":
+                    data = input("Insira a data desejada (dd-mm-yyyy): ")
+                    date = timeparser.parse(data).date().isoformat()
+                    requestUrl = centerURL + "updateAgendamento"
+                    params = {"cc": cc, "data": date}
+                    response = requests.put(requestUrl, params=params)
             else:
                 print("Resposta inválida")
 
         elif option == "3" :
-            break
+            exit(0)
 
         else: 
             print("Opção Invalida")
