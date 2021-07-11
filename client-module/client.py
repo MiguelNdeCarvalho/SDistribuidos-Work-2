@@ -1,5 +1,6 @@
 import argparse
 import requests
+import dateutil.parser as timeparser
 
 DGSURL="http://localhost:8000/api/v1/"
 
@@ -38,8 +39,9 @@ def cliente():
             nome = input("Insira o nome: ")
             idade = int(input("Insira a idade: "))
             email = input("Insira o email: ")
-
-            request = {"cc": cc, "nome": nome, "idade": idade, "email": email, "data": f"{datetime.date.today()}"}            
+            data = input("Insira a data desejada (dd-mm-yyyy): ")
+            date = timeparser.parse(data, dayfirst=True).date().isoformat()
+            request = {"cc": cc, "nome": nome, "idade": idade, "email": email, "data": date}
 
             response = requests.post(f"{centerURL}autoAgendamento", json=request)
 
@@ -64,7 +66,7 @@ def cliente():
 
                 if option == "s":
                     data = input("Insira a data desejada (dd-mm-yyyy): ")
-                    date = timeparser.parse(data).date().isoformat()
+                    date = timeparser.parse(data, dayfirst=True).date().isoformat()
                     requestUrl = centerURL + "updateAgendamento"
                     params = {"cc": cc, "data": date}
                     response = requests.put(requestUrl, params=params)
