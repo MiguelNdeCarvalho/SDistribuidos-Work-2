@@ -1,13 +1,15 @@
 import argparse
 import requests
 
+DGSURL="http://localhost:8000/api/v1/"
+
 def cliente():
     option = 0
 
     print("--------Client-Module--------")
 
     centros = []
-    response = requests.get("http://localhost:8000/api/v1/getCentros")
+    response = requests.get(f"{DGSURL}getCentros")
 
     choice = 1
     for item in response.json():
@@ -81,7 +83,7 @@ def centro():
     print("--------Center-Module--------")
 
     centros = []
-    response = requests.get("http://localhost:8000/api/v1/getCentros")
+    response = requests.get(f"{DGSURL}getCentros")
 
     choice = 1
     for item in response.json():
@@ -155,13 +157,13 @@ def dgs():
             #tipo de vacina
 
             params = {"data":data,"n_vacinas": n_vacinas,"tipo":tipo}            
-            response = requests.get("http://localhost:8000/api/v1/fornecerVacinas",params=params)
+            response = requests.get(f"{DGSURL}fornecerVacinas",params=params)
             print(response.text)
 
         elif option == "2" :
             
             data = input("Insira o dia: ")
-            requestUrl = "http://localhost:8000/api/v1/nTotalVacinas"
+            requestUrl = f"{DGSURL}nTotalVacinas"
             params = {"data": data}            
             response = requests.get(requestUrl,params=params)
             
