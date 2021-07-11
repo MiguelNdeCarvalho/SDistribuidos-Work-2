@@ -145,7 +145,7 @@ public class MainController {
     @GetMapping(
         path = "/nTotalVacinas",
         produces = "application/json")
-    void getTotalVacinas() throws ClientProtocolException, IOException, ParseException{
+    JSONArray getTotalVacinas() throws ClientProtocolException, IOException, ParseException{
 
         List<Centros> centros = (List<Centros>) centrosRepository.findAll();
         JSONArray global = new JSONArray();
@@ -169,11 +169,13 @@ public class MainController {
                         JSONObject n =  (JSONObject) jsonArr.get(i);
                         n.put("centroNome", centro.getNome());
                         global.add(n);
-
                     }
+                    return jsonArr;
                 }
             }
         }
+        JSONArray jsonArr = (JSONArray) new JSONParser().parse("");
+        return jsonArr;
     }
 
     @GetMapping(
