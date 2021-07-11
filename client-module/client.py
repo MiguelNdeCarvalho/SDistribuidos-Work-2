@@ -36,13 +36,19 @@ def cliente():
         if option == "1" :
             
             cc = int(input("Insira o numero do cartão de cidadão: "))
+            
+            request = {"cc": cc}
+            response = requests.get(f"{centerURL}getAgendamento", params=request)
+            if response.text != "":
+                print("Já existe um agendamento com este CC")
+                exit(1)
+            
             nome = input("Insira o nome: ")
             idade = int(input("Insira a idade: "))
             email = input("Insira o email: ")
             data = input("Insira a data desejada (dd-mm-yyyy): ")
             date = timeparser.parse(data, dayfirst=True).date().isoformat()
             request = {"cc": cc, "nome": nome, "idade": idade, "email": email, "data": date}
-
             response = requests.post(f"{centerURL}autoAgendamento", json=request)
 
         elif option == "2" :
@@ -82,7 +88,7 @@ def cliente():
 def centro():
     option = 0
 
-    print("--------Center-Module--------")
+    print("--------Centro-Vacinação--------")
 
     centros = []
     response = requests.get(f"{DGSURL}getCentros")
@@ -141,7 +147,7 @@ def centro():
 def dgs():
     option = 0
 
-    print("--------DGS-Module--------")
+    print("--------Módulo Central (DGS)--------")
     while 1:
 
         print("1) Fornecer Vacinas")
