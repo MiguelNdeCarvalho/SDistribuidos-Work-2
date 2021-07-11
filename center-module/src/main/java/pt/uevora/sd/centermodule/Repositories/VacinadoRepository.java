@@ -10,4 +10,6 @@ import pt.uevora.sd.centermodule.Models.Vacinado;
 public interface VacinadoRepository extends CrudRepository<Vacinado, Long> {
     Vacinado findByCc(Long cc);
     List<Vacinado> findByData(LocalDate data);
+    List<Vacinado> findByDataAndTipoVacina(LocalDate data, String tipoVacina);
+
 }

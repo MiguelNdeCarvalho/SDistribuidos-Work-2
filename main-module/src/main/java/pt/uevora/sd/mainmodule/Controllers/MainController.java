@@ -2,6 +2,8 @@ package pt.uevora.sd.mainmodule.Controllers;
 
 import java.io.IOException;
 import java.io.StringWriter;
+import java.time.LocalDate;
+import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.Collections;
 import java.util.Comparator;
@@ -29,6 +31,8 @@ import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.bind.annotation.RestController;
+
+import javassist.expr.NewArray;
 import pt.uevora.sd.mainmodule.Models.*;
 import pt.uevora.sd.mainmodule.Repositories.*;
 
@@ -38,6 +42,9 @@ public class MainController {
 
     @Autowired
     private CentrosRepository centrosRepository;
+
+    @Autowired
+    private VacinadosRepository vacinadosRepository;
     
     @PostMapping(
 		path = "/newCentro",
@@ -79,6 +86,68 @@ public class MainController {
         return centrosRepository.findOneByNome(json.get("nome").toString()).getVacinadosPorDia();
     }
 
+    @PostMapping(
+        path = "/setVacinados",
+        consumes = "application/json")
+    String setVacinados(@RequestBody String nome) throws ParseException{
+        JSONParser parser = new JSONParser();
+        JSONArray json = (JSONArray) parser.parse(nome);
+        
+        JSONObject centerNome = (JSONObject) json.get(0);
+        JSONObject data = (JSONObject) json.get(1);
+
+        System.out.println( centerNome.get("centerName"));
+
+
+        for (int i = 2; i < json.size(); i++) {
+            
+            JSONObject tipoVacina = (JSONObject) json.get(i);
+            JSONObject count = (JSONObject) json.get(i);
+
+            Long idCentro = centrosRepository.findOneByNome(centerNome.get("centerName").toString()).getId();
+            Long numeroVacinados = Long.valueOf(count.get("count").toString());
+            LocalDate dia = LocalDate.parse(data.get("data").toString());
+            String vacina = tipoVacina.get("vacina").toString();
+
+
+            vacinadosRepository.save(new Vacinados( idCentro,  numeroVacinados, dia,  vacina));
+        }
+
+        return "ok";
+    }
+
+    @GetMapping(
+        path = "/listVacinados",
+        produces = "application/json")
+    JSONArray listVacinados() {
+        
+        List<Vacinados> vacinas = vacinadosRepository.findAll();
+        List<LocalDate> datas = new ArrayList<>();
+
+        for (Vacinados vaci : vacinas) {
+            LocalDate date = vaci.getData();
+            if ( !datas.contains(date)){
+                datas.add(date);
+            }
+        }
+
+        JSONArray global = new JSONArray();
+
+        for (LocalDate n : datas) {
+            List<Vacinados> vacinados = vacinadosRepository.findByData(n);
+            Long count = (long) 0;
+            for (Vacinados vaci : vacinados) {
+                count += vaci.getNumeroVacinados();
+            }
+    
+            JSONObject m = new JSONObject();
+            m.put("vacinados", count);
+            m.put("data", n.toString());
+            global.add(m);
+        }
+
+        return global;
+    }
 
     @GetMapping(
         path = "/nTotalVacinas",
@@ -115,6 +184,41 @@ public class MainController {
 
         System.out.println(global.toJSONString());
     }
+
+    @GetMapping(
+        path = "/requestVacinados",
+        produces = "application/json")
+    void requestVacinados(@RequestParam String nome) throws ClientProtocolException, IOException, ParseException{
+    
+        List<Centros> centros = (List<Centros>) centrosRepository.findAll();
+        JSONArray global = new JSONArray();
+        
+        for (Centros centro : centros) {    
+            //pedido getAgendamentosByData
+            CloseableHttpClient httpClient = HttpClients.createDefault();
+            HttpGet request = new HttpGet(centro.getUrl() + "getCountVacinasAdmnistradas");
+    
+            try (CloseableHttpResponse response = httpClient.execute(request)) {
+    
+                // Get HttpResponse Status
+                HttpEntity entity = response.getEntity();
+                if (entity != null) {
+                    // return it as a String
+                    String result = EntityUtils.toString(entity);
+
+                    JSONArray jsonArr = (JSONArray) new JSONParser().parse( result );
+
+                    for (int i = 0; i < jsonArr.size(); i++) {
+                        JSONObject n =  (JSONObject) jsonArr.get(i);
+                        n.put("centroNome", centro.getNome());
+                        global.add(n);
+
+                    }
+                }
+            }
+        }
+    }
+
 
     @GetMapping(
         path = "/fornecerVacinas",
