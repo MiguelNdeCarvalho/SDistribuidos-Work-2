@@ -51,9 +51,6 @@ public class MainController {
 		consumes = "application/json",
 		produces = "application/json")
 	Centros newCentro(@RequestBody Centros newCentro){
-
-		System.out.println(newCentro.toString());
-
 		return centrosRepository.save(newCentro);
 	}
 
@@ -82,7 +79,6 @@ public class MainController {
     Long getVacinasPorDiaByNome(@RequestBody String nome) throws ParseException{
         JSONParser parser = new JSONParser();
         JSONObject json = (JSONObject) parser.parse(nome);
-        System.out.println(nome);
         return centrosRepository.findOneByNome(json.get("nome").toString()).getVacinadosPorDia();
     }
 
@@ -95,9 +91,6 @@ public class MainController {
         
         JSONObject centerNome = (JSONObject) json.get(0);
         JSONObject data = (JSONObject) json.get(1);
-
-        System.out.println( centerNome.get("centerName"));
-
 
         for (int i = 2; i < json.size(); i++) {
             
@@ -181,8 +174,6 @@ public class MainController {
                 }
             }
         }
-
-        System.out.println(global.toJSONString());
     }
 
     @GetMapping(
@@ -269,17 +260,11 @@ public class MainController {
                 catch (JSONException e) {
                     //do something
                 }
-
-                System.out.println(valA);
-                System.out.println(valB);
-
                 return -valA.compareTo(valB);
 
             }
         });
-        
-        //System.out.println(global.toJSONString());
-        
+                
         int contagem[] = new int[centros.size()];
         Arrays.fill(contagem, 0);
 
@@ -290,8 +275,6 @@ public class MainController {
             contagem[(int)(id-1)]++;
         }
 
-        //System.out.println(Arrays.toString(contagem));
-        //contagem
         
         for(int i = 0; i < contagem.length; i++)
         {

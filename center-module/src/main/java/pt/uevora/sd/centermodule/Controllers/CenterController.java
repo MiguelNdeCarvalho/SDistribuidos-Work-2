@@ -103,7 +103,6 @@ public class CenterController {
                 if (entity != null) {
                     // return it as a String
                     String capacidade = EntityUtils.toString(response.getEntity());
-                    System.out.println(capacidade);
                     if (Integer.parseInt(capacidade) <= agendamentoRepository.findAllByData(LocalDate.parse(newAgendamento.getData().toString())).size())
                     {
                         return "O dia está cheio";
