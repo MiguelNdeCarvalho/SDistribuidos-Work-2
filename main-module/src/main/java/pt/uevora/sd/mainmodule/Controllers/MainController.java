@@ -279,10 +279,10 @@ public class MainController {
         for(int i = 0; i < contagem.length; i++)
         {
             CloseableHttpClient client = HttpClients.createDefault();
-            HttpPost post = new HttpPost("http://localhost:8000/api/v1/" + "setStock");
+            HttpPost post = new HttpPost(centros.get(i).getUrl() + "setStock");
 
             JSONObject send = new JSONObject();
-            Long num = centros.get(i).getId();
+            Long num = (long) contagem[centros.get(i).getId().intValue() - 1];
             send.put("data", data);
             send.put("nVacinas", num);
             send.put("tipoVacinas", "braps");
