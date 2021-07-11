@@ -1,3 +1,4 @@
+import argparse
 import requests
 
 def cliente():
@@ -174,4 +175,17 @@ def dgs():
             print("Opção Invalida")
 
 if __name__ == '__main__':
-    cliente()
+    parser = argparse.ArgumentParser()        
+    parser.add_argument("-cliente", "--cliente", action='store_true', dest='cliente', help='Menu de cliente', default=False)
+    parser.add_argument("-centro", "--centro", action='store_true', dest='centro', help='Menu para gerir o Centro de Vacinação', default=False)
+    parser.add_argument("-dgs", "--dgs", action='store_true', dest='dgs', help='Menu para gerir o módulo da DGS', default=False)
+    results = parser.parse_args()  
+
+    if results.cliente:
+        cliente()
+    elif results.centro:
+        centro()
+    elif results.dgs:
+        dgs()
+    else:
+        cliente()
