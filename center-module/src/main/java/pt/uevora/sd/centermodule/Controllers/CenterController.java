@@ -221,14 +221,15 @@ public class CenterController {
     @PostMapping(
         path = "/setVacinado/{cc}",
         produces = "application/json")
-    String getStocks(@PathVariable Long cc, @RequestParam String tipoVacina){
+    String getStocks(@PathVariable Long cc){
 
         Agendamento agendamento = agendamentoRepository.findOneByCc(cc);
         if (agendamento == null){
             return "não existe";
         }
+        Stock stock = stockRepository.findOneByData(agendamento.getData());
         agendamentoRepository.delete(agendamento);
-        vacinadoRepository.save(new Vacinado(cc,agendamento.getData(),tipoVacina));
+        vacinadoRepository.save(new Vacinado(cc,agendamento.getData(), stock.getTipoVacinas()));
 
 
         return "done";
