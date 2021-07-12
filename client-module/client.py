@@ -115,15 +115,14 @@ def centro():
         print("-------------------------")
         print("1) Lista de Agendamentos")
         print("2) Stock de vacinas")
-        print("3) Vacinação")
+        print("3) Marcar como vacinado")
         print("4) Sair")
 
         option = input("Option: ")
 
         if option == "1":
-            response = requests.get(centerURL+"getAgendamentos")
+            response = requests.get(f"{centerURL}getAgendamentos")
             if response != "":
-                print("")
                 centros = [['CC', 'Nome', 'Idade', 'Mail',
                             'Data', 'Confirmacao']]
                 for agendamento in response.json():
@@ -140,25 +139,30 @@ def centro():
                     else:
                         confirmacao = "Pendente"
                     centros.append([cc, nome, idade, mail, data, confirmacao])
+                print("\nAgendamentos:")
                 print(tabulate(centros, headers='firstrow', tablefmt="pretty"))
             else:
                 print("Ainda não existem agendamentos neste centro!")
 
         elif option == "2":
-            response = requests.get(centerURL+"getStocks", params=params)
-            print(response.json())
-            print(response.text)
+            response = requests.get(f"{centerURL}getStocks")
+            if response != "":
+                centros = [['Data', 'Nº Vacinas', 'Tipo']]
+                for stock in response.json():
+                    data = timeparser.parse(stock['data']) \
+                        .strftime('%d-%m-%Y')
+                    nVacinas = stock['nVacinas']
+                    tipo = stock['tipoVacinas']
+                    centros.append([data, nVacinas, tipo])
+                print("\nStock:")
+                print(tabulate(centros, headers='firstrow', tablefmt="pretty"))
+            else:
+                print("Ainda não existem stocks disponíveis para este centro!")
 
         elif option == "3":
             cc = int((input("Insira o numero do cartão de cidadão: ")))
-            tipo = input("Insira o tipo da vacina: ")
-
-            # tipo de vacina
-
-            params = {"tipoVacina": tipo}
-            response = requests.post(f"{centerURL}setVacinado/{cc}",
-                                     params=params)
-            print(response.text)
+            response = requests.post(f"{centerURL}setVacinado/{cc}")
+            print(response)
 
         elif option == "4":
             break
