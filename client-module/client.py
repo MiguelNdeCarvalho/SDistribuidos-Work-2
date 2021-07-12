@@ -137,8 +137,8 @@ def centro():
                     else:
                         confirmacao = "Pendente"
                     print(f"CC={cc}, Nome='{nome}', Idade={idade},"
-                          f"Mail='{mail}', Data='{data}'",
-                          f"Confirmação='{confirmacao}'")
+                          f" Mail='{mail}', Data='{data}',"
+                          f" Confirmação='{confirmacao}'")
             else:
                 print("Ainda não existem agendamentos neste centro!")
 
