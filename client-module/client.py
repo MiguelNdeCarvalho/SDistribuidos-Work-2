@@ -133,9 +133,10 @@ def centro():
                     mail = agendamento['email']
                     data = timeparser.parse(agendamento['data']) \
                         .strftime('%d-%m-%Y')
-                    if agendamento['confirmacao'] == "true":
+                    print(agendamento['confirmacao'])
+                    if agendamento['confirmacao']:
                         confirmacao = "Confirmado"
-                    elif agendamento['confirmacao'] == "false":
+                    elif not agendamento['confirmacao']:
                         confirmacao = "Reagendamento"
                     else:
                         confirmacao = "Pendente"
@@ -195,29 +196,31 @@ def dgs():
     while 1:
 
         print("1) Fornecer Vacinas")
-        print("2) Relatorio")
-        print("3) Exit")
+        print("2) Listar Vacinados")
+        print("3) Sair")
 
         option = input("Option: ")
 
         if option == "1":
             n_vacinas = int(input("Insira o numero de vacinas: "))
-            data = input("Insira a data: ")
+            date = input("Insira a data (dd-mm-yyyy): ")
+            data = timeparser.parse(date, dayfirst=True) \
+                             .date().isoformat()
             tipo = input("Insira o tipo da vacina: ")
-
-            # tipo de vacina
-
-            params = {"data": data, "n_vacinas": n_vacinas, "tipo": tipo}
+            params = {"n_vacinas": n_vacinas, "data": data, "tipoVacinas": tipo}
             response = requests.get(f"{DGSURL}fornecerVacinas", params=params)
-            print(response.text)
 
         elif option == "2":
-            data = input("Insira o dia: ")
-            requestUrl = f"{DGSURL}nTotalVacinas"
-            params = {"data": data}
-            response = requests.get(requestUrl, params=params)
-            print(response.json())
-
+            listVacinados = [['Data', 'Nº Vacinados']]
+            requestUrl = f"{DGSURL}listVacinados"
+            responses = requests.get(requestUrl)
+            for response in responses.json():
+                data = timeparser.parse(response['data']) \
+                        .strftime('%d-%m-%Y')
+                nVacinados = response['vacinados']
+                listVacinados.append([data, nVacinados])
+            print(tabulate(listVacinados, headers='firstrow',
+                           tablefmt="pretty"))
         elif option == "3":
             break
 
