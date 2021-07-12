@@ -125,17 +125,15 @@ def centro():
             print(response.json())
 
         elif option == "2":
-            
             response = requests.get(centerURL+"getStocks", params=params)
             print(response.json())
-            
             print(response.text)
 
         elif option == "3":
             cc = int((input("Insira o numero do cartão de cidadão: ")))
             tipo = input("Insira o tipo da vacina: ")
 
-            #tipo de vacina
+            # tipo de vacina
 
             params = {"tipoVacina": tipo}
             response = requests.post(f"{centerURL}setVacinado/{cc}",
@@ -166,7 +164,7 @@ def dgs():
             data = input("Insira a data: ")
             tipo = input("Insira o tipo da vacina: ")
 
-            #tipo de vacina
+            # tipo de vacina
 
             params = {"data": data, "n_vacinas": n_vacinas, "tipo": tipo}
             response = requests.get(f"{DGSURL}fornecerVacinas", params=params)
