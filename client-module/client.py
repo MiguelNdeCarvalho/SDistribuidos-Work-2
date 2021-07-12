@@ -94,7 +94,7 @@ def cliente():
 def centro():
     option = 0
 
-    print("--------Centro-Vacinação--------")
+    print("--------Módulo-Centro-Vacinação--------")
 
     centros = []
     response = requests.get(f"{DGSURL}getCentros")
@@ -106,7 +106,6 @@ def centro():
         choice += 1
 
     choice = int(input("Escolha o centro que se deseja conectar: "))
-    print(centros[choice-1]['url'])
 
     centerURL = centros[choice-1]['url']
 
@@ -116,13 +115,32 @@ def centro():
         print("1) Lista de Agendamentos")
         print("2) Stock de vacinas")
         print("3) Vacinação")
-        print("4) Exit")
+        print("4) Sair")
 
         option = input("Option: ")
 
         if option == "1":
-            response = requests.get(centerURL+"getAgendamentos", params=params)
-            print(response.json())
+            response = requests.get(centerURL+"getAgendamentos")
+            if response != "":
+                print("")
+                for agendamento in response.json():
+                    cc = agendamento['cc']
+                    nome = agendamento['nome']
+                    idade = agendamento['idade']
+                    mail = agendamento['email']
+                    data = timeparser.parse(agendamento['data']) \
+                        .strftime('%d-%m-%Y')
+                    if agendamento['confirmacao'] == "true":
+                        confirmacao = "Confirmado"
+                    elif agendamento['confirmacao'] == "false":
+                        confirmacao = "Reagendamento"
+                    else:
+                        confirmacao = "Pendente"
+                    print(f"CC={cc}, Nome='{nome}', Idade={idade},"
+                          f"Mail='{mail}', Data='{data}'",
+                          f"Confirmação='{confirmacao}'")
+            else:
+                print("Ainda não existem agendamentos neste centro!")
 
         elif option == "2":
             response = requests.get(centerURL+"getStocks", params=params)
