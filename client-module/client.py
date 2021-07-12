@@ -1,6 +1,7 @@
 import argparse
 import requests
 import dateutil.parser as timeparser
+from tabulate import tabulate
 
 DGSURL = "http://localhost:8000/api/v1/"
 
@@ -123,6 +124,8 @@ def centro():
             response = requests.get(centerURL+"getAgendamentos")
             if response != "":
                 print("")
+                centros = [['CC', 'Nome', 'Idade', 'Mail',
+                            'Data', 'Confirmacao']]
                 for agendamento in response.json():
                     cc = agendamento['cc']
                     nome = agendamento['nome']
@@ -136,9 +139,8 @@ def centro():
                         confirmacao = "Reagendamento"
                     else:
                         confirmacao = "Pendente"
-                    print(f"CC={cc}, Nome='{nome}', Idade={idade},"
-                          f" Mail='{mail}', Data='{data}',"
-                          f" Confirmação='{confirmacao}'")
+                    centros.append([cc, nome, idade, mail, data, confirmacao])
+                print(tabulate(centros, headers='firstrow', tablefmt="pretty"))
             else:
                 print("Ainda não existem agendamentos neste centro!")
 
