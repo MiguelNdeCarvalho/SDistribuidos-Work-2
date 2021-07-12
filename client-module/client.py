@@ -116,7 +116,8 @@ def centro():
         print("1) Lista de Agendamentos")
         print("2) Stock de vacinas")
         print("3) Marcar como vacinado")
-        print("4) Sair")
+        print("4) Comunicar lista de vacinações realizadas à DGS")
+        print("5) Sair")
 
         option = input("Option: ")
 
@@ -173,6 +174,14 @@ def centro():
                 print("Resposta desconhecida")
 
         elif option == "4":
+            date = input("Insira a data desejada (dd-mm-yyyy): ")
+            data = timeparser.parse(date, dayfirst=True) \
+                             .date().isoformat()
+            params = {'data': data}
+            response = requests.post(f"{centerURL}sendVacinados",
+                                     params=params)
+
+        elif option == "5":
             break
 
         else:
@@ -182,7 +191,7 @@ def centro():
 def dgs():
     option = 0
 
-    print("--------Módulo Central (DGS)--------")
+    print("--------Módulo-Central-DGS--------")
     while 1:
 
         print("1) Fornecer Vacinas")
