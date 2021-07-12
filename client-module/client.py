@@ -122,7 +122,7 @@ def centro():
 
         if option == "1":
             response = requests.get(f"{centerURL}getAgendamentos")
-            if response != "":
+            if response.text != "":
                 centros = [['CC', 'Nome', 'Idade', 'Mail',
                             'Data', 'Confirmacao']]
                 for agendamento in response.json():
@@ -146,7 +146,7 @@ def centro():
 
         elif option == "2":
             response = requests.get(f"{centerURL}getStocks")
-            if response != "":
+            if response.text != "":
                 centros = [['Data', 'Nº Vacinas', 'Tipo']]
                 for stock in response.json():
                     data = timeparser.parse(stock['data']) \
@@ -162,7 +162,7 @@ def centro():
         elif option == "3":
             cc = int((input("Insira o numero do cartão de cidadão: ")))
             response = requests.post(f"{centerURL}setVacinado/{cc}")
-            print(response)
+            print(response.text)
 
         elif option == "4":
             break
