@@ -8,7 +8,7 @@ DGSURL = "http://localhost:8000/api/v1/"
 def cliente():
     option = 0
 
-    print("--------Client-Module--------")
+    print("--------Módulo-Cliente--------")
 
     centros = []
     response = requests.get(f"{DGSURL}getCentros")
@@ -19,16 +19,16 @@ def cliente():
         print(f"{choice}-> {item['nome']}")
         choice += 1
 
-    choice = int(input("Escolha o centro que se deseja conectar: "))
+    choice = int(input("Escolha o centro a que se deseja conectar: "))
 
     centerURL = centros[choice-1]['url']
 
     while 1:
 
         print("-------------------------")
-        print("1) Auto Agendamento")
+        print("1) Realizar o autoagendamento")
         print("2) Informação do Agendamento")
-        print("3) Exit")
+        print("3) Sair")
 
         option = input("Opção: ")
 
@@ -51,6 +51,7 @@ def cliente():
                        "email": email, "data": date}
             response = requests.post(f"{centerURL}autoAgendamento",
                                      json=request)
+            print("Foi realizado um agendamento com sucesso!")
 
         elif option == "2":
             cc = int((input("Insira o numero do cartão de cidadão: ")))
@@ -79,6 +80,7 @@ def cliente():
                     requestUrl = centerURL + "updateAgendamento"
                     params = {"cc": cc, "data": date}
                     response = requests.put(requestUrl, params=params)
+                    print("Reagendamento realizado com sucesso!")
             else:
                 print("Resposta inválida")
 
