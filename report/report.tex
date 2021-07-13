@@ -1,0 +1,163 @@
+\documentclass[11pt]{article}
+
+\usepackage[a4paper, total={16cm, 24cm}]{geometry}
+\usepackage[portuguese]{babel}
+\usepackage[utf8]{inputenc}
+\usepackage{graphicx}
+\usepackage{amsmath}
+\usepackage{tikz}
+    \usetikzlibrary{shadows}
+\usepackage{booktabs}
+\usepackage[colorlinks=true]{hyperref}
+\usepackage{listings}
+    \renewcommand\lstlistingname{Listagem}
+    \lstset{numbers=left, numberstyle=\tiny, numbersep=5pt, basicstyle=\footnotesize\ttfamily, frame=tb,rulesepcolor=\color{gray}, breaklines=true}
+\usepackage{blindtext}
+
+% -------------------------------------------------------------------------------------------
+\title
+{
+    \includegraphics[width=0.4\textwidth]{imgs/university.png}
+    \\[0.1cm]
+    \textbf{2º Trabalho Prático} \\
+    Sistemas Distribuídos
+}
+
+\author
+{
+    \textbf{Professor:} José Saias \\
+    \textbf{Realizado por:} Miguel de Carvalho (43108), João Pereira (42864) 
+}
+\date{\today}
+
+% -------------------------------------------------------------------------------------------
+%                                Body                                                       %
+% -------------------------------------------------------------------------------------------
+
+\begin{document}
+\maketitle
+
+% -------------------------------------------------------------------------------------------
+\section{Introdução}
+
+\hspace{0.6cm}Neste trabalho foi solicitado a realização de um sistema que ajude a organizar e a gerir o \textbf{Sistema de Vacinação}.
+
+O \textbf{Sistema de Vacinação} é um sistema constituído por 3 módulos, representado na figura abaixo
+
+\begin{figure}[h]
+    \includegraphics[width=1\textwidth]{imgs/sd.png}
+    \centering
+    \caption{Representação dos módulos e as suas ligações}
+\end{figure}
+
+\hfill
+
+Tal como referenciado na figura acima, o sistema é composto por 3 módulos:
+\begin{itemize}
+    \item Cliente;
+    \item Centro de Vacinação;
+    \item Central.
+\end{itemize}
+
+\hfill
+
+O \textbf{módulo cliente} é responsável pela comunicação do cliente com o \textbf{módulo do centro de vacinação} e com o \textbf{módulo central}. Este módulo permite que um utilizador comum possa consultar os centros de vacinação, realizar o auto agendamento da vacinação num dos centros, receber a confirmação ou a impossibilidade para aquele dia/centro e a capacidade de reagendar para outro dia. Permite também que os trabalhadores dos \textbf{centros de vacinação} e os trabalhadores do \textbf{do módulo central (DGS)} possam executar operações nos seus módulos respetivamente. 
+
+Por outro lado o \textbf{módulo centro de vacinação} é responsável por guardar os agendamentos dos utilizadores, a realização das vacinações agendadas e o stock de vacinas para cada dia.
+
+Por fim o \textbf{módulo central} é responsável por guardar uma lista de todos os centros e sua capacidade diária, dado um stock distribuir as vacinas pelos centros de modo a abranger as pessoas mais velhas e por último listar o nº total de vacinados por tipo de vacina e por dia, de acordo com dados recebidos dos centros.
+% -------------------------------------------------------------------------------------------
+\section{Implementação}
+
+\subsection{Módulo Cliente}
+
+\begin{itemize}
+    \item Auto Agendamento: o cliente insere o cartão de cidadão, o nome, a idade, o email e uma data para a marcação de um agendamento;
+    \item Informação sobre o Agendamento: o cliente obtém o estado do pedido de agendamento (confirmado,recusado ou pendente);
+    \item Reagendar: o cliente insere uma data para o reagendamento.
+\end{itemize}
+
+\subsection{Módulo Centro de Vacinação}
+
+\begin{itemize}
+    \item Lista de Agendamentos: mostra uma lista dos agendamentos marcados para um determinado dia;
+    \item Stock de vacinas: mostra uma lista das quantidades (stock) das respectivas vacinas fornecidas pelo \textbf{módulo central} para um determinado dia;
+    \item Vacinação: Realização de uma vacina para um determinado cliente que já se encontrava com um agendamento;
+    \item Comunicar lista de vacinações realizadas ao \textbf{módulo central}: comunica ao  \textbf{módulo central} uma lista de vacinações realizadas num determinado dia.
+\end{itemize}
+
+\subsection{Módulo Central}
+
+\begin{itemize}
+    \item Fornecer Vacinas: faz a distribuição de um determinado número de vacinas pelos diversos \textbf{centros de vacinação} (prioriza os clientes com uma idade maior);
+    \item Listar Vacinados: Obtém o numero de vacinas administradas num dia;
+\end{itemize}
+
+
+\section{Pedidos}
+\subsection{Módulo Centro de Vacinação} 
+
+\begin{itemize}
+    \item \verb|/autoAgendamento|:recebe um agendamento e guarda-o na BD (caso o centro não esteja lotado);
+    \item \verb|/getAgendamentos|: lista os vários agendamentos;
+    \item \verb|/updateAgendamento|: actualiza a informação do agendamento de um determinado cliente;
+    \item \verb|/getAgendamentoStatus|: devolve o estado de um agendamento;  
+    \item \verb|/setStock|: define o stock das vacinas (data e tipo de vacina) e altera o estado do agendamento e envia um email com a respectiva informação;
+    \item \verb|/getStock/{data}|: devolve o stock disponível numa determinada data;
+    \item \verb|/getStocks| devolve uma lista do stocks para cada data respetiva;
+    \item \verb|/setVacinado/{cc}|: marca um utilizador como vacinado e remove-o da lista de agendamentos;
+    \item \verb|/sendVacinados|: envia para o\textbf{módulo central} uma lista de vacinas administradas num determinado dia;
+\end{itemize}
+
+\subsection{Módulo Central}
+
+\begin{itemize}
+    \item \verb|/newCentro|: cria um novo centro de vacinação;
+    \item \verb|/getCentros|: lista os centros de vacinação;
+    \item \verb|/getCentro/{nome}|: devolve os atributos de um centro;
+    \item \verb|/deleteCentro|: apaga um \textbf{centro de vacinação} da BD;
+    \item \verb|/getVacinasPorDia|: devolve a capacidade máxima de agendamentos para um determinado centro;
+    \item \verb|/setVacinados|: guarda na BD o número de vacinados num certo dia num centro;
+    \item \verb|/listVacinados|: devolve uma lista com o número de vacinados no total para todas as datas;
+    \item \verb|/nTotalVacinas|: devolve uma contagem do número total de vacinas administradas num dia por tipo de vacina;
+    \item \verb|/requestVacinados|: recebe a lista de vacinados proveniente dos diversos centros e guarda-os na BD;
+    \item \verb|/fornecerVacinas|: faz a distribuição das vacinas pelos diversos \textbf{centros de vacinação} de acordo com as idades dos clientes em cada centro;
+
+\end{itemize}
+
+% -------------------------------------------------------------------------------------------
+\section{Execução do trabalho}
+
+\subsection{Requísitos}
+
+\begin{itemize}
+    \item Java
+    \item Gradle
+    \item PostgreSQL
+    \item Python
+\end{itemize}
+
+\subsection{Módulo Central e de Vacinação}
+
+\begin{enumerate}
+    \item Aceder à pasta \verb|main-module| ou \verb|center-module|
+    \item Mudar os ficheiros de configuração que se encontram dentro das pastas \verb|resources|
+    \item Fazer \verb|gradle bootRun|
+\end{enumerate}
+
+\subsection{Módulo Cliente}
+
+\begin{enumerate}
+    \item Aceder à pasta \verb|client-module|
+    \item Fazer \verb|pip install -r requirements.txt|
+    \item Fazer \verb|python client.py| ou \verb|python client.py --centro| ou \verb|python client.py --dgs|
+\end{enumerate}
+
+% -------------------------------------------------------------------------------------------
+\section{Conclusão}
+
+\hspace{0.5cm}Em suma, com a realização deste trabalho conseguimos criar uma \textbf{Sistema de Vacinação} que permite organizar e gerir um \textbf{Sistema de Vacinação} de um país. Ficámos também muito mais esclarecidos sobre o funcionamento de uma \textbf{REST API} e que em conjunto com uma \textbf{arquitetura de sistemas distribuídos}, permitiu-nos criar um sistema capaz de tolerar falhas e ao mesmo tempo mais modular, pois permite que aplicações escritas em linguagens diferentes possam comunicar com este sistema.
+
+Saliento também que neste trabalho aplicámos todo o conhecimento que adquirimos durante as aulas e com a realização do mesmo ajudou a compreender alguns pontos que não tínhamos entendido tão bem.
+% -------------------------------------------------------------------------------------------
+\end{document}
